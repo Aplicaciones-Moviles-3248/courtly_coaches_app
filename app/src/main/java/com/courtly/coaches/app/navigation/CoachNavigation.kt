@@ -46,6 +46,7 @@ import com.courtly.coaches.ui.theme.Primary
 import com.courtly.coaches.ui.theme.TextSecondary
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.collectAsState
+import com.courtly.coaches.contexts.availabilities.presentation.screens.CoachAvailabilityScreen
 
 private const val CREATE_COACH_ROUTE = "create_coach"
 private const val EDIT_COACH_ROUTE = "edit_coach"
@@ -57,6 +58,7 @@ fun CoachNavigation(
     onSignOut: () -> Unit
 ) {
     val navController = rememberNavController()
+    val coachUiState by coachViewModel.uiState.collectAsState()
 
     val currentBackStackEntry by
     navController.currentBackStackEntryAsState()
@@ -74,6 +76,14 @@ fun CoachNavigation(
 
     val showBottomBar =
         currentRoute in mainRoutes
+
+    LaunchedEffect(currentRoute, coachUiState.coach?.id) {
+        if (currentRoute in setOf(AVAILABILITY_ROUTE, PROFILE_ROUTE) &&
+            coachUiState.coach == null
+        ) {
+            coachViewModel.loadMyCoach()
+        }
+    }
 
     Scaffold(
         containerColor = Background,
@@ -135,7 +145,15 @@ fun CoachNavigation(
             }
 
             composable(AVAILABILITY_ROUTE) {
-                CoachAvailabilityPlaceholderScreen()
+                val coachId = coachUiState.coach?.id
+
+                if (coachId != null) {
+                    CoachAvailabilityScreen(
+                        coachId = coachId
+                    )
+                } else {
+                    CoachAvailabilityLoadingScreen()
+                }
             }
 
             composable(SESSIONS_ROUTE) {
@@ -147,10 +165,6 @@ fun CoachNavigation(
             }
 
             composable(PROFILE_ROUTE) {
-                LaunchedEffect(Unit) {
-                    coachViewModel.loadMyCoach()
-                }
-
                 CoachProfileScreen(
                     viewModel = coachViewModel,
                     onCreateProfile = {
@@ -363,5 +377,19 @@ private fun SimpleCoachSectionScreen(
                 )
             )
         }
+    }
+}
+
+@Composable
+private fun CoachAvailabilityLoadingScreen() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Background),
+        contentAlignment = Alignment.Center
+    ) {
+        CircularProgressIndicator(
+            color = Primary
+        )
     }
 }
