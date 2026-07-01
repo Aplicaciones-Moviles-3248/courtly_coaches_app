@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -76,6 +77,7 @@ fun SignInScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(Background)
+            .statusBarsPadding()
             .imePadding()
     ) {
         Column(
