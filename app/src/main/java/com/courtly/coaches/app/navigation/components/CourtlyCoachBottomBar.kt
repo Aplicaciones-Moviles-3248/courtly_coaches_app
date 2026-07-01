@@ -25,6 +25,7 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.SportsSoccer
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
+import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -140,6 +141,7 @@ private fun CourtlyBottomBarItem(
         modifier = Modifier
             .width(64.dp)
             .height(62.dp)
+            .minimumInteractiveComponentSize()
             .clip(RoundedCornerShape(12.dp))
             .clickable(onClick = onClick)
             .padding(
@@ -189,6 +191,7 @@ private fun CourtlyCenterButton(
         Box(
             modifier = Modifier
                 .size(58.dp)
+                .minimumInteractiveComponentSize()
                 .shadow(
                     elevation = 12.dp,
                     shape = CircleShape,
