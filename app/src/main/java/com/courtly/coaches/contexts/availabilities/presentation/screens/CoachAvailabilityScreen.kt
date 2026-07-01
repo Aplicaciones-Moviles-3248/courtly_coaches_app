@@ -1,6 +1,7 @@
 package com.courtly.coaches.contexts.availabilities.presentation.screens
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.courtly.coaches.contexts.availabilities.application.usecases.CreateAvailabilityUseCase
 import com.courtly.coaches.contexts.availabilities.application.usecases.DeleteAvailabilityUseCase
@@ -18,13 +19,15 @@ import com.courtly.coaches.shared.infrastructure.network.RetrofitClient
 fun CoachAvailabilityScreen(
     coachId: Long
 ) {
-    val apiService = RetrofitClient.retrofit.create(
-        AvailabilityApiService::class.java
-    )
+    val repository = remember {
+        val apiService = RetrofitClient.retrofit.create(
+            AvailabilityApiService::class.java
+        )
+        AvailabilityRepositoryImpl(apiService)
+    }
 
-    val repository = AvailabilityRepositoryImpl(apiService)
-    val viewModel: AvailabilityViewModel = viewModel(
-        factory = AvailabilityViewModelFactory(
+    val factory = remember(repository) {
+        AvailabilityViewModelFactory(
             getAllAvailabilitiesUseCase = GetAllAvailabilitiesUseCase(repository),
             getMyAvailabilitiesUseCase = GetMyAvailabilitiesUseCase(repository),
             getAvailabilityByIdUseCase = GetAvailabilityByIdUseCase(repository),
@@ -32,6 +35,10 @@ fun CoachAvailabilityScreen(
             updateAvailabilityUseCase = UpdateAvailabilityUseCase(repository),
             deleteAvailabilityUseCase = DeleteAvailabilityUseCase(repository)
         )
+    }
+
+    val viewModel: AvailabilityViewModel = viewModel(
+        factory = factory
     )
 
     AvailabilityScreen(

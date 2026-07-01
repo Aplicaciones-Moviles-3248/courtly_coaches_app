@@ -280,7 +280,7 @@ private fun CoachHomeScreen(
         icon = {
             Icon(
                 imageVector = Icons.Default.Home,
-                contentDescription = null,
+                contentDescription = "Inicio",
                 tint = Primary
             )
         }
@@ -297,7 +297,7 @@ private fun CoachAvailabilityPlaceholderScreen() {
             Icon(
                 imageVector =
                     Icons.Default.DateRange,
-                contentDescription = null,
+                contentDescription = "Horarios",
                 tint = Primary
             )
         }
@@ -314,7 +314,7 @@ private fun CoachSessionsPlaceholderScreen() {
             Icon(
                 imageVector =
                     Icons.Default.Groups,
-                contentDescription = null,
+                contentDescription = "Sesiones",
                 tint = DarkNavy
             )
         }
@@ -331,7 +331,7 @@ private fun CoachMatchesPlaceholderScreen() {
             Icon(
                 imageVector =
                     Icons.Default.SportsSoccer,
-                contentDescription = null,
+                contentDescription = "Partidos",
                 tint = Primary
             )
         }
