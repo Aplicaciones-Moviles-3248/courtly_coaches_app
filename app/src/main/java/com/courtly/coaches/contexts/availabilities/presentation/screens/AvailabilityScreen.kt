@@ -11,9 +11,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.CalendarMonth
@@ -143,79 +143,87 @@ private fun AvailabilityContent(
     var editorOpen by remember { mutableStateOf(false) }
     val editorAvailability = uiState.selectedAvailability
 
-    Column(
+    LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
             .padding(18.dp)
     ) {
-        HeroCard(
-            total = total,
-            availableCount = availableCount,
-            reservedCount = reservedCount
-        )
+        item {
+            HeroCard(
+                total = total,
+                availableCount = availableCount,
+                reservedCount = reservedCount
+            )
 
-        Spacer(modifier = Modifier.height(14.dp))
+            Spacer(modifier = Modifier.height(14.dp))
 
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(10.dp),
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Button(
-                onClick = onRefresh,
-                modifier = Modifier.weight(1f)
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                modifier = Modifier.fillMaxWidth()
             ) {
-                Icon(
-                    imageVector = Icons.Default.Refresh,
-                    contentDescription = null,
-                    modifier = Modifier.size(18.dp)
-                )
-                Spacer(modifier = Modifier.size(8.dp))
-                Text("Actualizar")
+                Button(
+                    onClick = onRefresh,
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Refresh,
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Spacer(modifier = Modifier.size(8.dp))
+                    Text("Actualizar")
+                }
+
+                OutlinedButton(
+                    onClick = {
+                        editorOpen = true
+                        onAddAvailability()
+                    },
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Spacer(modifier = Modifier.size(8.dp))
+                    Text("Nuevo horario")
+                }
             }
 
-            OutlinedButton(
-                onClick = {
-                    editorOpen = true
-                    onAddAvailability()
-                },
-                modifier = Modifier.weight(1f)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = null,
-                    modifier = Modifier.size(18.dp)
-                )
-                Spacer(modifier = Modifier.size(8.dp))
-                Text("Nuevo horario")
+            Spacer(modifier = Modifier.height(16.dp))
+
+            if (uiState.errorMessage != null) {
+                ErrorCard(message = uiState.errorMessage.orEmpty())
+                Spacer(modifier = Modifier.height(12.dp))
             }
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        if (uiState.errorMessage != null) {
-            ErrorCard(message = uiState.errorMessage.orEmpty())
-            Spacer(modifier = Modifier.height(12.dp))
         }
 
         if (uiState.availabilities.isEmpty()) {
-            EmptyStateCard(
-                onCreate = {
-                    editorOpen = true
-                    onAddAvailability()
-                }
-            )
+            item {
+                EmptyStateCard(
+                    onCreate = {
+                        editorOpen = true
+                        onAddAvailability()
+                    }
+                )
+            }
         } else {
-            Text(
-                text = "Tus horarios",
-                color = TextPrimary,
-                fontSize = 18.sp,
-                fontWeight = FontWeight.ExtraBold
-            )
+            item {
+                Text(
+                    text = "Tus horarios",
+                    color = TextPrimary,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.ExtraBold
+                )
 
-            Spacer(modifier = Modifier.height(10.dp))
+                Spacer(modifier = Modifier.height(10.dp))
+            }
 
-            uiState.availabilities.forEach { availability ->
+            items(
+                items = uiState.availabilities,
+                key = { it.id }
+            ) { availability ->
                 AvailabilityCard(
                     availability = availability,
                     onEdit = {
