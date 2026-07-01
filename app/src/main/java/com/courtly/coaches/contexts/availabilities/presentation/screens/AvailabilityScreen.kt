@@ -40,6 +40,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -284,7 +286,7 @@ private fun HeroCard(
                 ) {
                     Icon(
                         imageVector = Icons.Default.CalendarMonth,
-                        contentDescription = null,
+                        contentDescription = "Agenda del entrenador",
                         tint = Primary,
                         modifier = Modifier.padding(10.dp)
                     )
@@ -461,6 +463,7 @@ private fun StatusDot(
     Box(
         modifier = Modifier
             .size(12.dp)
+            .semantics { contentDescription = status.label }
             .background(color = color, shape = RoundedCornerShape(50))
     )
 }
@@ -501,7 +504,7 @@ private fun EmptyStateCard(
         ) {
             Icon(
                 imageVector = Icons.Default.Schedule,
-                contentDescription = null,
+                contentDescription = "Sin horarios cargados",
                 tint = Primary,
                 modifier = Modifier.size(42.dp)
             )
