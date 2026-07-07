@@ -27,6 +27,13 @@ import com.courtly.coaches.contexts.iam.infrastructure.repository.Authentication
 import com.courtly.coaches.contexts.iam.presentation.screens.SignInScreen
 import com.courtly.coaches.contexts.iam.presentation.viewmodel.SignInViewModel
 import com.courtly.coaches.contexts.iam.presentation.viewmodel.SignInViewModelFactory
+import com.courtly.coaches.contexts.notifications.application.usecases.GetMyNotificationsUseCase
+import com.courtly.coaches.contexts.notifications.application.usecases.GetMyUnreadCountUseCase
+import com.courtly.coaches.contexts.notifications.application.usecases.MarkNotificationAsReadUseCase
+import com.courtly.coaches.contexts.notifications.infrastructure.remote.NotificationApiService
+import com.courtly.coaches.contexts.notifications.infrastructure.repository.NotificationRepositoryImpl
+import com.courtly.coaches.contexts.notifications.presentation.viewmodel.NotificationViewModel
+import com.courtly.coaches.contexts.notifications.presentation.viewmodel.NotificationViewModelFactory
 import com.courtly.coaches.shared.infrastructure.network.RetrofitClient
 import com.courtly.coaches.shared.infrastructure.storage.SessionStorage
 import com.courtly.coaches.ui.theme.CourtlyCoachesTheme
@@ -79,6 +86,16 @@ class MainActivity : ComponentActivity() {
                 repository = coachRepository
             )
 
+        val notificationApiService =
+            RetrofitClient.retrofit.create(
+                NotificationApiService::class.java
+            )
+
+        val notificationRepository =
+            NotificationRepositoryImpl(
+                apiService = notificationApiService
+            )
+
         val signInViewModelFactory =
             SignInViewModelFactory(
                 signInUseCase = signInUseCase,
@@ -108,14 +125,29 @@ class MainActivity : ComponentActivity() {
                     )
             )
 
+        val notificationViewModelFactory =
+            NotificationViewModelFactory(
+                getMyNotificationsUseCase =
+                    GetMyNotificationsUseCase(
+                        repository = notificationRepository
+                    ),
+                markNotificationAsReadUseCase =
+                    MarkNotificationAsReadUseCase(
+                        repository = notificationRepository
+                    ),
+                getMyUnreadCountUseCase =
+                    GetMyUnreadCountUseCase(
+                        repository = notificationRepository
+                    )
+            )
+
         setContent {
             CourtlyCoachesTheme {
                 CourtlyApp(
                     sessionStorage = sessionStorage,
-                    signInViewModelFactory =
-                        signInViewModelFactory,
-                    coachViewModelFactory =
-                        coachViewModelFactory
+                    signInViewModelFactory = signInViewModelFactory,
+                    coachViewModelFactory = coachViewModelFactory,
+                    notificationViewModelFactory = notificationViewModelFactory
                 )
             }
         }
@@ -126,7 +158,8 @@ class MainActivity : ComponentActivity() {
 fun CourtlyApp(
     sessionStorage: SessionStorage,
     signInViewModelFactory: SignInViewModelFactory,
-    coachViewModelFactory: CoachViewModelFactory
+    coachViewModelFactory: CoachViewModelFactory,
+    notificationViewModelFactory: NotificationViewModelFactory
 ) {
     var isAuthenticated by remember {
         mutableStateOf(
@@ -140,8 +173,14 @@ fun CourtlyApp(
                 factory = coachViewModelFactory
             )
 
+        val notificationViewModel: NotificationViewModel =
+            viewModel(
+                factory = notificationViewModelFactory
+            )
+
         CoachNavigation(
             coachViewModel = coachViewModel,
+            notificationViewModel = notificationViewModel,
             userId = sessionStorage.getUserId()?.toLong() ?: 0L,
             onSignOut = {
                 sessionStorage.clearSession()

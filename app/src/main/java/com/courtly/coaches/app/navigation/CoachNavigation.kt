@@ -1,6 +1,7 @@
 package com.courtly.coaches.app.navigation
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -47,13 +48,17 @@ import com.courtly.coaches.ui.theme.TextSecondary
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.collectAsState
 import com.courtly.coaches.contexts.availabilities.presentation.screens.CoachAvailabilityScreen
+import com.courtly.coaches.contexts.notifications.presentation.screens.NotificationScreen
+import com.courtly.coaches.contexts.notifications.presentation.viewmodel.NotificationViewModel
 
 private const val CREATE_COACH_ROUTE = "create_coach"
 private const val EDIT_COACH_ROUTE = "edit_coach"
+private const val NOTIFICATIONS_ROUTE = "notifications"
 
 @Composable
 fun CoachNavigation(
     coachViewModel: CoachViewModel,
+    notificationViewModel: NotificationViewModel,
     userId: Long,
     onSignOut: () -> Unit
 ) {
@@ -140,6 +145,9 @@ fun CoachNavigation(
                             navController = navController,
                             route = PROFILE_ROUTE
                         )
+                    },
+                    onOpenNotifications = {
+                        navController.navigate(NOTIFICATIONS_ROUTE)
                     }
                 )
             }
@@ -240,6 +248,15 @@ fun CoachNavigation(
                     }
                 }
             }
+
+            composable(NOTIFICATIONS_ROUTE) {
+                NotificationScreen(
+                    viewModel = notificationViewModel,
+                    onBackClick = {
+                        navController.popBackStack()
+                    }
+                )
+            }
         }
     }
 }
@@ -271,7 +288,8 @@ private fun navigateToMainTab(
 
 @Composable
 private fun CoachHomeScreen(
-    onOpenProfile: () -> Unit
+    onOpenProfile: () -> Unit,
+    onOpenNotifications: () -> Unit
 ) {
     SimpleCoachSectionScreen(
         title = "Inicio",
@@ -281,7 +299,8 @@ private fun CoachHomeScreen(
             Icon(
                 imageVector = Icons.Default.Home,
                 contentDescription = "Inicio",
-                tint = Primary
+                tint = Primary,
+                modifier = Modifier.clickable { onOpenNotifications() }
             )
         }
     )
