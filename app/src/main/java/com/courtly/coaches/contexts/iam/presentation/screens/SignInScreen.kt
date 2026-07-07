@@ -16,7 +16,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -35,6 +35,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
@@ -76,6 +77,7 @@ import com.courtly.coaches.ui.theme.Background
 import com.courtly.coaches.ui.theme.Border
 import com.courtly.coaches.ui.theme.DarkNavy
 import com.courtly.coaches.ui.theme.Primary
+import com.courtly.coaches.ui.theme.Spacing
 import com.courtly.coaches.ui.theme.TextPrimary
 import com.courtly.coaches.ui.theme.TextSecondary
 
@@ -101,6 +103,7 @@ fun SignInScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(Background)
+            .statusBarsPadding()
             .imePadding()
     ) {
         Column(
@@ -108,12 +111,12 @@ fun SignInScreen(
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
                 .padding(
-                    horizontal = 28.dp,
-                    vertical = 32.dp
+                    horizontal = Spacing.lg,
+                    vertical = Spacing.xl
                 ),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(42.dp))
+            Spacer(modifier = Modifier.height(Spacing.xxl))
 
             Image(
                 painter = painterResource(
@@ -123,7 +126,7 @@ fun SignInScreen(
                 modifier = Modifier.size(86.dp)
             )
 
-            Spacer(modifier = Modifier.height(18.dp))
+            Spacer(modifier = Modifier.height(Spacing.sm))
 
             Text(
                 text = "ACCESO PARA ENTRENADORES",
@@ -134,7 +137,7 @@ fun SignInScreen(
                 textAlign = TextAlign.Center
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(Spacing.xs))
 
             Text(
                 text = "Courtly para\nentrenadores",
@@ -145,7 +148,7 @@ fun SignInScreen(
                 textAlign = TextAlign.Center
             )
 
-            Spacer(modifier = Modifier.height(22.dp))
+            Spacer(modifier = Modifier.height(Spacing.md))
 
             CoachAuthTabs(
                 isLoginSelected = isLoginSelected,
@@ -157,7 +160,7 @@ fun SignInScreen(
                 }
             )
 
-            Spacer(modifier = Modifier.height(18.dp))
+            Spacer(modifier = Modifier.height(Spacing.md))
 
             if (isLoginSelected) {
                 CoachLoginForm(
@@ -174,7 +177,7 @@ fun SignInScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(Spacing.md))
 
             Text(
                 text = if (isLoginSelected) {
@@ -188,7 +191,7 @@ fun SignInScreen(
                 textAlign = TextAlign.Center
             )
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(Spacing.lg))
         }
     }
 }
@@ -204,12 +207,10 @@ private fun CoachAuthTabs(
             .fillMaxWidth()
             .height(44.dp)
             .background(
-                color = androidx.compose.ui.graphics.Color(
-                    0xFFF4F8FB
-                ),
+                color = androidx.compose.ui.graphics.Color(0xFFF4F8FB),
                 shape = RoundedCornerShape(14.dp)
             )
-            .padding(4.dp)
+            .padding(Spacing.xs)
     ) {
         CoachAuthTabButton(
             text = "Iniciar sesión",
@@ -237,6 +238,7 @@ private fun CoachAuthTabButton(
     Box(
         modifier = modifier
             .fillMaxSize()
+            .minimumInteractiveComponentSize()
             .clip(RoundedCornerShape(11.dp))
             .background(
                 color = if (isSelected) {
@@ -276,29 +278,31 @@ private fun CoachLoginForm(
             label = "Usuario o correo",
             value = username,
             onValueChange = viewModel::onUsernameChanged,
+            placeholder = "Ej. coach_juan",
             imeAction = ImeAction.Next
         )
 
-        Spacer(modifier = Modifier.height(14.dp))
+        Spacer(modifier = Modifier.height(Spacing.sm))
 
         CourtlyTextField(
             label = "Contraseña",
             value = password,
             onValueChange = viewModel::onPasswordChanged,
+            placeholder = "Ingresa tu contraseña",
             isPassword = true,
             imeAction = ImeAction.Done,
             onDone = viewModel::signIn
         )
 
         if (errorMessage != null) {
-            Spacer(modifier = Modifier.height(14.dp))
+            Spacer(modifier = Modifier.height(Spacing.sm))
 
             ErrorMessageBox(
                 message = errorMessage
             )
         }
 
-        Spacer(modifier = Modifier.height(18.dp))
+        Spacer(modifier = Modifier.height(Spacing.md))
 
         Button(
             onClick = viewModel::signIn,
@@ -306,7 +310,7 @@ private fun CoachLoginForm(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(52.dp),
-            shape = RoundedCornerShape(14.dp)
+            shape = MaterialTheme.shapes.medium
         ) {
             if (isLoading) {
                 CircularProgressIndicator(
@@ -340,44 +344,49 @@ private fun CoachRegisterForm(
             label = "Nombre completo",
             value = uiState.registerName,
             onValueChange = viewModel::onRegisterNameChanged,
+            placeholder = "Ej. Juan Pérez",
             imeAction = ImeAction.Next
         )
 
-        Spacer(modifier = Modifier.height(14.dp))
+        Spacer(modifier = Modifier.height(Spacing.sm))
 
         CourtlyTextField(
             label = "Usuario o correo",
             value = uiState.registerUsername,
             onValueChange = viewModel::onRegisterUsernameChanged,
+            placeholder = "Ej. juan@gmail.com",
             keyboardType = KeyboardType.Email,
             imeAction = ImeAction.Next
         )
 
-        Spacer(modifier = Modifier.height(14.dp))
+        Spacer(modifier = Modifier.height(Spacing.sm))
 
         CourtlyTextField(
             label = "Teléfono",
             value = uiState.registerPhone,
             onValueChange = viewModel::onRegisterPhoneChanged,
+            placeholder = "Ej. 987654321",
             keyboardType = KeyboardType.Phone,
             imeAction = ImeAction.Next
         )
 
-        Spacer(modifier = Modifier.height(14.dp))
+        Spacer(modifier = Modifier.height(Spacing.sm))
 
         CourtlyTextField(
             label = "Especialidad",
             value = uiState.registerExpertise,
             onValueChange = viewModel::onRegisterExpertiseChanged,
+            placeholder = "Ej. Tenis, Fútbol",
             imeAction = ImeAction.Next
         )
 
-        Spacer(modifier = Modifier.height(14.dp))
+        Spacer(modifier = Modifier.height(Spacing.sm))
 
         CourtlyTextField(
             label = "Contraseña",
             value = uiState.registerPassword,
             onValueChange = viewModel::onRegisterPasswordChanged,
+            placeholder = "Mínimo 6 caracteres",
             isPassword = true,
             imeAction = ImeAction.Done,
             onDone = viewModel::signUpCoach
@@ -394,14 +403,14 @@ private fun CoachRegisterForm(
         )
 
         if (uiState.errorMessage != null) {
-            Spacer(modifier = Modifier.height(14.dp))
+            Spacer(modifier = Modifier.height(Spacing.sm))
 
             ErrorMessageBox(
                 message = uiState.errorMessage
             )
         }
 
-        Spacer(modifier = Modifier.height(18.dp))
+        Spacer(modifier = Modifier.height(Spacing.md))
 
         Button(
             onClick = viewModel::signUpCoach,
@@ -409,7 +418,7 @@ private fun CoachRegisterForm(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(52.dp),
-            shape = RoundedCornerShape(14.dp)
+            shape = MaterialTheme.shapes.medium
         ) {
             if (uiState.isLoading) {
                 CircularProgressIndicator(
@@ -747,6 +756,7 @@ private fun CourtlyTextField(
     label: String,
     value: String,
     onValueChange: (String) -> Unit,
+    placeholder: String = "",
     isPassword: Boolean = false,
     keyboardType: KeyboardType = KeyboardType.Text,
     imeAction: ImeAction,
@@ -762,14 +772,17 @@ private fun CourtlyTextField(
             fontWeight = FontWeight.Bold
         )
 
-        Spacer(modifier = Modifier.height(6.dp))
+        Spacer(modifier = Modifier.height(Spacing.xs))
 
         OutlinedTextField(
             value = value,
             onValueChange = onValueChange,
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
-            shape = RoundedCornerShape(16.dp),
+            shape = MaterialTheme.shapes.large,
+            placeholder = if (placeholder.isNotEmpty()) {
+                { Text(text = placeholder, color = TextSecondary.copy(alpha = 0.6f), fontSize = 14.sp) }
+            } else null,
             visualTransformation = if (isPassword) {
                 PasswordVisualTransformation()
             } else {
@@ -787,14 +800,8 @@ private fun CourtlyTextField(
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = Primary,
                 unfocusedBorderColor = Border,
-                focusedContainerColor =
-                    androidx.compose.ui.graphics.Color(
-                        0xFFF4F8FB
-                    ),
-                unfocusedContainerColor =
-                    androidx.compose.ui.graphics.Color(
-                        0xFFF4F8FB
-                    ),
+                focusedContainerColor = androidx.compose.ui.graphics.Color(0xFFF4F8FB),
+                unfocusedContainerColor = androidx.compose.ui.graphics.Color(0xFFF4F8FB),
                 focusedTextColor = TextPrimary,
                 unfocusedTextColor = TextPrimary,
                 cursorColor = Primary
@@ -810,15 +817,9 @@ private fun ErrorMessageBox(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(
-                RoundedCornerShape(14.dp)
-            )
-            .background(
-                androidx.compose.ui.graphics.Color(
-                    0xFFFFECEC
-                )
-            )
-            .padding(14.dp),
+            .clip(MaterialTheme.shapes.medium)
+            .background(androidx.compose.ui.graphics.Color(0xFFFFECEC))
+            .padding(Spacing.sm),
         contentAlignment = Alignment.Center
     ) {
         Text(

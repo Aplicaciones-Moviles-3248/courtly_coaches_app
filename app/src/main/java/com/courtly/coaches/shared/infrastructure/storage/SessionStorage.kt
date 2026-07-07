@@ -1,13 +1,22 @@
 package com.courtly.coaches.shared.infrastructure.storage
 
 import android.content.Context
+import androidx.security.crypto.EncryptedSharedPreferences
+import androidx.security.crypto.MasterKey
 
 class SessionStorage(
     context: Context
 ) {
-    private val preferences = context.getSharedPreferences(
+    private val masterKey = MasterKey.Builder(context)
+        .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+        .build()
+
+    private val preferences = EncryptedSharedPreferences.create(
+        context,
         PREFERENCES_NAME,
-        Context.MODE_PRIVATE
+        masterKey,
+        EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+        EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
     )
 
     fun saveSession(

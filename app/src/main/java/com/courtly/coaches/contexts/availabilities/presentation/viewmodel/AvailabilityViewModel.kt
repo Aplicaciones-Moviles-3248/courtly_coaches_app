@@ -103,6 +103,8 @@ class AvailabilityViewModel(
         status: AvailabilityStatus,
         coachId: Long
     ) {
+        if (!validateDateTime(date, startTime, endTime)) return
+
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(
                 isSaving = true,
@@ -220,6 +222,35 @@ class AvailabilityViewModel(
         _uiState.value = _uiState.value.copy(selectedAvailability = null)
     }
 
+    private fun validateDateTime(
+        date: String,
+        startTime: String,
+        endTime: String
+    ): Boolean {
+        val errorMessage = when {
+            !DATE_REGEX.matches(date.trim()) ->
+                "Ingresa una fecha válida con formato YYYY-MM-DD."
+
+            !TIME_REGEX.matches(startTime.trim()) ->
+                "Ingresa una hora de inicio válida con formato HH:mm."
+
+            !TIME_REGEX.matches(endTime.trim()) ->
+                "Ingresa una hora de fin válida con formato HH:mm."
+
+            else -> null
+        }
+
+        if (errorMessage != null) {
+            _uiState.value = _uiState.value.copy(
+                isSaving = false,
+                errorMessage = errorMessage
+            )
+            return false
+        }
+
+        return true
+    }
+
     private fun getErrorMessage(error: HttpException): String {
         return when (error.code()) {
             400 -> "Los datos enviados no son válidos."
@@ -229,5 +260,10 @@ class AvailabilityViewModel(
             409 -> "Ya existe una disponibilidad en ese horario."
             else -> "Ocurrió un error al comunicarse con el servidor."
         }
+    }
+
+    companion object {
+        private val DATE_REGEX = Regex("^\\d{4}-\\d{2}-\\d{2}$")
+        private val TIME_REGEX = Regex("^([01]\\d|2[0-3]):[0-5]\\d$")
     }
 }
