@@ -86,6 +86,21 @@ class MainActivity : ComponentActivity() {
                 createCoachUseCase = createCoachUseCase
             )
 
+        val reviewApiService =
+            RetrofitClient.retrofit.create(
+                com.courtly.coaches.contexts.reviews.infrastructure.remote.ReviewApiService::class.java
+            )
+
+        val reviewRepository =
+            com.courtly.coaches.contexts.reviews.infrastructure.repository.ReviewRepositoryImpl(
+                apiService = reviewApiService
+            )
+
+        val getCoachReviewsUseCase =
+            com.courtly.coaches.contexts.reviews.application.usecases.GetCoachReviewsUseCase(
+                repository = reviewRepository
+            )
+
         val coachViewModelFactory =
             CoachViewModelFactory(
                 getMyCoachUseCase =
@@ -105,7 +120,41 @@ class MainActivity : ComponentActivity() {
                 deleteCoachUseCase =
                     DeleteCoachUseCase(
                         repository = coachRepository
-                    )
+                    ),
+                getCoachReviewsUseCase =
+                    getCoachReviewsUseCase
+            )
+
+        val trainingSessionApiService =
+            RetrofitClient.retrofit.create(
+                com.courtly.coaches.contexts.trainingsessions.infrastructure.remote.TrainingSessionApiService::class.java
+            )
+
+        val trainingSessionRepository =
+            com.courtly.coaches.contexts.trainingsessions.infrastructure.repository.TrainingSessionRepositoryImpl(
+                apiService = trainingSessionApiService
+            )
+
+        val getMyTrainingSessionsUseCase =
+            com.courtly.coaches.contexts.trainingsessions.application.usecases.GetMyTrainingSessionsUseCase(
+                repository = trainingSessionRepository
+            )
+
+        val acceptTrainingSessionUseCase =
+            com.courtly.coaches.contexts.trainingsessions.application.usecases.AcceptTrainingSessionUseCase(
+                repository = trainingSessionRepository
+            )
+
+        val rejectTrainingSessionUseCase =
+            com.courtly.coaches.contexts.trainingsessions.application.usecases.RejectTrainingSessionUseCase(
+                repository = trainingSessionRepository
+            )
+
+        val trainingSessionsViewModelFactory =
+            com.courtly.coaches.contexts.trainingsessions.presentation.viewmodel.TrainingSessionsViewModelFactory(
+                getMyTrainingSessionsUseCase = getMyTrainingSessionsUseCase,
+                acceptTrainingSessionUseCase = acceptTrainingSessionUseCase,
+                rejectTrainingSessionUseCase = rejectTrainingSessionUseCase
             )
 
         setContent {
@@ -115,7 +164,9 @@ class MainActivity : ComponentActivity() {
                     signInViewModelFactory =
                         signInViewModelFactory,
                     coachViewModelFactory =
-                        coachViewModelFactory
+                        coachViewModelFactory,
+                    trainingSessionsViewModelFactory =
+                        trainingSessionsViewModelFactory
                 )
             }
         }
@@ -126,7 +177,8 @@ class MainActivity : ComponentActivity() {
 fun CourtlyApp(
     sessionStorage: SessionStorage,
     signInViewModelFactory: SignInViewModelFactory,
-    coachViewModelFactory: CoachViewModelFactory
+    coachViewModelFactory: CoachViewModelFactory,
+    trainingSessionsViewModelFactory: com.courtly.coaches.contexts.trainingsessions.presentation.viewmodel.TrainingSessionsViewModelFactory
 ) {
     var isAuthenticated by remember {
         mutableStateOf(
@@ -140,8 +192,14 @@ fun CourtlyApp(
                 factory = coachViewModelFactory
             )
 
+        val trainingSessionsViewModel: com.courtly.coaches.contexts.trainingsessions.presentation.viewmodel.TrainingSessionsViewModel =
+            viewModel(
+                factory = trainingSessionsViewModelFactory
+            )
+
         CoachNavigation(
             coachViewModel = coachViewModel,
+            trainingSessionsViewModel = trainingSessionsViewModel,
             userId = sessionStorage.getUserId()?.toLong() ?: 0L,
             onSignOut = {
                 sessionStorage.clearSession()
