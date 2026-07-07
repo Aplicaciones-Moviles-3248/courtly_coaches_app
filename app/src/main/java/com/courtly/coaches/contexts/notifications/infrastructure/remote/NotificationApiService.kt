@@ -9,12 +9,12 @@ import retrofit2.http.Path
 
 interface NotificationApiService {
 
-    @GET("api/v1/notifications/me")
+    @GET("notifications/me")
     suspend fun getMyNotifications(): Response<List<NotificationDto>>
 
-    @POST("api/v1/notifications/{id}/read")
+    @POST("notifications/{id}/read")
     suspend fun markNotificationAsRead(@Path("id") id: Long): Response<NotificationDto>
 
-    @GET("api/v1/notifications/me/unread-count")
+    @GET("notifications/me/unread-count")
     suspend fun getMyUnreadCount(): Response<NotificationCountDto>
 }

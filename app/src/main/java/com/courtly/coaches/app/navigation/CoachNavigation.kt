@@ -11,6 +11,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.SportsSoccer
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -46,6 +47,10 @@ import com.courtly.coaches.ui.theme.DarkNavy
 import com.courtly.coaches.ui.theme.Primary
 import com.courtly.coaches.ui.theme.TextSecondary
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.collectAsState
 import com.courtly.coaches.contexts.availabilities.presentation.screens.CoachAvailabilityScreen
 import com.courtly.coaches.contexts.notifications.presentation.screens.NotificationScreen
@@ -286,24 +291,70 @@ private fun navigateToMainTab(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun CoachHomeScreen(
     onOpenProfile: () -> Unit,
     onOpenNotifications: () -> Unit
 ) {
-    SimpleCoachSectionScreen(
-        title = "Inicio",
-        description =
-            "Bienvenido a tu panel profesional de Courtly.",
-        icon = {
-            Icon(
-                imageVector = Icons.Default.Home,
-                contentDescription = "Inicio",
-                tint = Primary,
-                modifier = Modifier.clickable { onOpenNotifications() }
+    Scaffold(
+        containerColor = Background,
+        topBar = {
+            TopAppBar(
+                title = {
+                },
+                actions = {
+                    IconButton(onClick = { onOpenNotifications() }) {
+                        Icon(
+                            imageVector = Icons.Default.Notifications,
+                            contentDescription = "Notificaciones",
+                            tint = DarkNavy
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Background
+                )
             )
         }
-    )
+    ) { paddingValues ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues),
+            contentAlignment = Alignment.Center
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Home,
+                    contentDescription = null,
+                    tint = Primary
+                )
+
+                Text(
+                    text = "Inicio",
+                    color = DarkNavy,
+                    fontSize = 28.sp,
+                    fontWeight = FontWeight.Black,
+                    textAlign = TextAlign.Center
+                )
+
+                Text(
+                    text = "Bienvenido a tu panel profesional de Courtly.",
+                    color = TextSecondary,
+                    fontSize = 14.sp,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(
+                        horizontal = 32.dp,
+                        vertical = 10.dp
+                    )
+                )
+            }
+        }
+    }
 }
 
 @Composable
