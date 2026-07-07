@@ -13,7 +13,8 @@ class CoachViewModelFactory(
     private val getAllCoachesUseCase: GetAllCoachesUseCase,
     private val createCoachUseCase: CreateCoachUseCase,
     private val updateCoachUseCase: UpdateCoachUseCase,
-    private val deleteCoachUseCase: DeleteCoachUseCase
+    private val deleteCoachUseCase: DeleteCoachUseCase,
+    private val getCoachReviewsUseCase: com.courtly.coaches.contexts.reviews.application.usecases.GetCoachReviewsUseCase? = null
 ) : ViewModelProvider.Factory {
 
     @Suppress("UNCHECKED_CAST")
@@ -26,7 +27,8 @@ class CoachViewModelFactory(
                 getAllCoachesUseCase = getAllCoachesUseCase,
                 createCoachUseCase = createCoachUseCase,
                 updateCoachUseCase = updateCoachUseCase,
-                deleteCoachUseCase = deleteCoachUseCase
+                deleteCoachUseCase = deleteCoachUseCase,
+                getCoachReviewsUseCase = getCoachReviewsUseCase
             ) as T
         }
 

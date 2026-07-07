@@ -89,6 +89,7 @@ fun CoachProfileScreen(
         uiState.coach != null -> {
             CoachProfileContent(
                 coach = uiState.coach!!,
+                reviews = uiState.reviews,
                 onEditProfile = {
                     onEditProfile(uiState.coach!!)
                 },
@@ -105,6 +106,7 @@ fun CoachProfileScreen(
 @Composable
 private fun CoachProfileContent(
     coach: Coach,
+    reviews: List<com.courtly.coaches.contexts.reviews.domain.model.Review>,
     onEditProfile: () -> Unit,
     onDeleteProfile: () -> Unit,
     onSignOut: () -> Unit,
@@ -148,6 +150,10 @@ private fun CoachProfileContent(
             onDeleteProfile = onDeleteProfile,
             isDeleting = isDeleting
         )
+
+        Spacer(modifier = Modifier.height(18.dp))
+
+        CoachReviewsSection(reviews = reviews)
 
         Spacer(modifier = Modifier.height(18.dp))
 
@@ -461,5 +467,108 @@ private fun ErrorCoachProfileView(
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun CoachReviewsSection(
+    reviews: List<com.courtly.coaches.contexts.reviews.domain.model.Review>
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(
+                color = Card,
+                shape = RoundedCornerShape(24.dp)
+            )
+            .border(width = 1.dp, color = Border, shape = RoundedCornerShape(24.dp))
+            .padding(20.dp)
+    ) {
+        Text(
+            text = "RESEÑAS Y VALORACIONES",
+            color = Primary,
+            fontSize = 11.sp,
+            fontWeight = FontWeight.ExtraBold,
+            letterSpacing = 1.3.sp
+        )
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        if (reviews.isEmpty()) {
+            Text(
+                text = "Aún no tienes valoraciones de jugadores.",
+                color = TextSecondary,
+                fontSize = 14.sp
+            )
+        } else {
+            val avgRating = reviews.map { it.score }.average()
+            val formattedAvg = String.format(java.util.Locale.US, "%.1f", avgRating)
+            
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "★ $formattedAvg",
+                    color = Primary,
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = "(${reviews.size} valoraciones)",
+                    color = TextSecondary,
+                    fontSize = 14.sp
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Column(
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                reviews.forEach { review ->
+                    ReviewItem(review = review)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun ReviewItem(
+    review: com.courtly.coaches.contexts.reviews.domain.model.Review
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(
+                color = Background,
+                shape = RoundedCornerShape(14.dp)
+            )
+            .padding(12.dp)
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.spaceBetween,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(
+                text = review.userName,
+                fontWeight = FontWeight.Bold,
+                fontSize = 14.sp,
+                color = TextPrimary
+            )
+            Text(
+                text = "★ ${review.score}",
+                fontWeight = FontWeight.Bold,
+                fontSize = 13.sp,
+                color = Primary
+            )
+        }
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(
+            text = review.comment,
+            fontSize = 13.sp,
+            color = TextSecondary
+        )
     }
 }

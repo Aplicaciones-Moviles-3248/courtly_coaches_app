@@ -54,6 +54,7 @@ private const val EDIT_COACH_ROUTE = "edit_coach"
 @Composable
 fun CoachNavigation(
     coachViewModel: CoachViewModel,
+    trainingSessionsViewModel: com.courtly.coaches.contexts.trainingsessions.presentation.viewmodel.TrainingSessionsViewModel,
     userId: Long,
     onSignOut: () -> Unit
 ) {
@@ -157,7 +158,9 @@ fun CoachNavigation(
             }
 
             composable(SESSIONS_ROUTE) {
-                CoachSessionsPlaceholderScreen()
+                com.courtly.coaches.contexts.trainingsessions.presentation.screens.TrainingSessionsScreen(
+                    viewModel = trainingSessionsViewModel
+                )
             }
 
             composable(MATCHES_ROUTE) {
