@@ -28,6 +28,7 @@ data class SignInUiState(
     val registerPhone: String = "",
     val registerExpertise: String = "",
     val registerPassword: String = "",
+    val termsAccepted: Boolean = false,
 
     val isLoading: Boolean = false,
     val isSuccess: Boolean = false,
@@ -103,6 +104,15 @@ class SignInViewModel(
         _uiState.update {
             it.copy(
                 registerPassword = value,
+                errorMessage = null
+            )
+        }
+    }
+
+    fun onTermsAcceptedChanged(value: Boolean) {
+        _uiState.update {
+            it.copy(
+                termsAccepted = value,
                 errorMessage = null
             )
         }
@@ -197,6 +207,14 @@ class SignInViewModel(
                 )
                 return
             }
+        }
+
+        if (!state.termsAccepted) {
+            // TODO: Persist terms acceptance in backend if a dedicated field is added later.
+            showError(
+                "Debes aceptar los Términos y Condiciones para crear tu cuenta."
+            )
+            return
         }
 
         viewModelScope.launch {
