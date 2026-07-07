@@ -35,7 +35,7 @@ fun TrainingSessionsScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(Background)
-            .padding(horizontal = 22.dp, vertical = 24.dp)
+            .padding(horizontal = Spacing.md, vertical = Spacing.lg)
     ) {
         Text(
             text = "SOLICITUDES DE ENTRENAMIENTO",
@@ -45,7 +45,7 @@ fun TrainingSessionsScreen(
             letterSpacing = 1.4.sp
         )
 
-        Spacer(modifier = Modifier.height(6.dp))
+        Spacer(modifier = Modifier.height(Spacing.xs))
 
         Text(
             text = "Sesiones",
@@ -54,7 +54,7 @@ fun TrainingSessionsScreen(
             fontWeight = FontWeight.ExtraBold
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(Spacing.md))
 
         TabRow(
             selectedTabIndex = selectedTab,
@@ -74,7 +74,7 @@ fun TrainingSessionsScreen(
             )
         }
 
-        Spacer(modifier = Modifier.height(18.dp))
+        Spacer(modifier = Modifier.height(Spacing.md))
 
         if (uiState.isLoading) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -86,7 +86,7 @@ fun TrainingSessionsScreen(
                     text = uiState.errorMessage ?: "Ocurrió un error inesperado.",
                     color = Color.Red,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(16.dp)
+                    modifier = Modifier.padding(Spacing.md)
                 )
             }
         } else {
@@ -101,7 +101,7 @@ fun TrainingSessionsScreen(
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(bottom = 60.dp),
+                        .padding(bottom = Spacing.xxl),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
@@ -113,7 +113,7 @@ fun TrainingSessionsScreen(
                 }
             } else {
                 LazyColumn(
-                    verticalArrangement = Arrangement.spacedBy(14.dp),
+                    verticalArrangement = Arrangement.spacedBy(Spacing.md),
                     modifier = Modifier.fillMaxSize()
                 ) {
                     items(filteredSessions) { session ->
@@ -136,14 +136,14 @@ fun TrainingSessionCard(
     onReject: () -> Unit
 ) {
     Card(
-        shape = RoundedCornerShape(16.dp),
+        shape = MaterialTheme.shapes.large,
         colors = CardDefaults.cardColors(containerColor = Card),
         modifier = Modifier
             .fillMaxWidth()
-            .border(1.dp, Border, RoundedCornerShape(16.dp))
+            .border(1.dp, Border, MaterialTheme.shapes.large)
     ) {
         Column(
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.padding(Spacing.md)
         ) {
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -159,7 +159,7 @@ fun TrainingSessionCard(
                 StatusBadge(status = session.status)
             }
 
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(Spacing.sm))
 
             Text(
                 text = "Cancha: ${session.courtName}",
@@ -167,7 +167,7 @@ fun TrainingSessionCard(
                 color = TextSecondary
             )
 
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(Spacing.xs))
 
             val timeParts = session.startTime.split("T")
             val date = if (timeParts.isNotEmpty()) timeParts[0] else ""
@@ -179,7 +179,7 @@ fun TrainingSessionCard(
                 color = TextSecondary
             )
 
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(Spacing.xs))
 
             Text(
                 text = "Precio: S/ ${session.price}",
@@ -189,14 +189,14 @@ fun TrainingSessionCard(
             )
 
             if (session.status == TrainingSessionStatus.PENDING) {
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(Spacing.md))
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                    horizontalArrangement = Arrangement.spacedBy(Spacing.sm),
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     OutlinedButton(
                         onClick = onReject,
-                        shape = RoundedCornerShape(12.dp),
+                        shape = MaterialTheme.shapes.medium,
                         colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.Red),
                         modifier = Modifier.weight(1f)
                     ) {
@@ -205,7 +205,7 @@ fun TrainingSessionCard(
 
                     Button(
                         onClick = onAccept,
-                        shape = RoundedCornerShape(12.dp),
+                        shape = MaterialTheme.shapes.medium,
                         colors = ButtonDefaults.buttonColors(containerColor = Primary, contentColor = DarkNavy),
                         modifier = Modifier.weight(1f)
                     ) {
@@ -229,8 +229,8 @@ fun StatusBadge(status: TrainingSessionStatus) {
 
     Box(
         modifier = Modifier
-            .background(color.copy(alpha = 0.15f), RoundedCornerShape(8.dp))
-            .padding(horizontal = 10.dp, vertical = 4.dp)
+            .background(color.copy(alpha = 0.15f), MaterialTheme.shapes.small)
+            .padding(horizontal = Spacing.sm, vertical = Spacing.xs)
     ) {
         Text(
             text = text,
