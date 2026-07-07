@@ -53,6 +53,10 @@ import com.courtly.coaches.ui.theme.Primary
 import com.courtly.coaches.ui.theme.Spacing
 import com.courtly.coaches.ui.theme.TextPrimary
 import com.courtly.coaches.ui.theme.TextSecondary
+import com.courtly.coaches.ui.theme.Border
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.foundation.clickable
+import androidx.compose.material3.OutlinedTextFieldDefaults
 
 @Composable
 fun AvailabilityScreen(
