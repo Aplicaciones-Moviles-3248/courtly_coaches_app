@@ -146,7 +146,7 @@ fun TrainingSessionCard(
             modifier = Modifier.padding(16.dp)
         ) {
             Row(
-                horizontalArrangement = Arrangement.spaceBetween,
+                horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
