@@ -541,6 +541,51 @@ private fun AvailabilityEditorDialog(
         mutableStateOf(availability?.status ?: AvailabilityStatus.AVAILABLE)
     }
 
+    val context = LocalContext.current
+    val calendar = remember { java.util.Calendar.getInstance() }
+
+    val datePickerDialog = remember {
+        android.app.DatePickerDialog(
+            context,
+            { _, year, month, dayOfMonth ->
+                val formattedMonth = String.format(java.util.Locale.US, "%02d", month + 1)
+                val formattedDay = String.format(java.util.Locale.US, "%02d", dayOfMonth)
+                date = "$year-$formattedMonth-$formattedDay"
+            },
+            calendar.get(java.util.Calendar.YEAR),
+            calendar.get(java.util.Calendar.MONTH),
+            calendar.get(java.util.Calendar.DAY_OF_MONTH)
+        )
+    }
+
+    val startTimePickerDialog = remember {
+        android.app.TimePickerDialog(
+            context,
+            { _, hourOfDay, minute ->
+                val formattedHour = String.format(java.util.Locale.US, "%02d", hourOfDay)
+                val formattedMinute = String.format(java.util.Locale.US, "%02d", minute)
+                startTime = "$formattedHour:$formattedMinute"
+            },
+            8,
+            0,
+            true
+        )
+    }
+
+    val endTimePickerDialog = remember {
+        android.app.TimePickerDialog(
+            context,
+            { _, hourOfDay, minute ->
+                val formattedHour = String.format(java.util.Locale.US, "%02d", hourOfDay)
+                val formattedMinute = String.format(java.util.Locale.US, "%02d", minute)
+                endTime = "$formattedHour:$formattedMinute"
+            },
+            9,
+            0,
+            true
+        )
+    }
+
     AlertDialog(
         onDismissRequest = onDismiss,
         confirmButton = {
@@ -579,43 +624,88 @@ private fun AvailabilityEditorDialog(
         text = {
             Column {
                 Text(
-                    text = "Completa tu bloque horario. Usa formato 24h para evitar errores.",
+                    text = "Completa tu bloque horario. Selecciona la fecha y las horas con los asistentes nativos.",
                     color = TextSecondary,
                     fontSize = 13.sp
                 )
 
                 Spacer(modifier = Modifier.height(Spacing.sm))
 
-                OutlinedTextField(
-                    value = date,
-                    onValueChange = { date = it },
-                    label = { Text("Fecha") },
-                    placeholder = { Text("YYYY-MM-DD") },
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth()
-                )
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { datePickerDialog.show() }
+                ) {
+                    OutlinedTextField(
+                        value = date,
+                        onValueChange = { },
+                        readOnly = true,
+                        label = { Text("Fecha") },
+                        placeholder = { Text("Seleccionar fecha") },
+                        singleLine = true,
+                        modifier = Modifier.fillMaxWidth(),
+                        enabled = false,
+                        colors = OutlinedTextFieldDefaults.colors(
+                            disabledTextColor = TextPrimary,
+                            disabledBorderColor = Border,
+                            disabledLabelColor = TextSecondary,
+                            disabledContainerColor = Color.Transparent,
+                            disabledPlaceholderColor = TextSecondary.copy(alpha = 0.5f)
+                        )
+                    )
+                }
 
                 Spacer(modifier = Modifier.height(Spacing.sm))
 
-                OutlinedTextField(
-                    value = startTime,
-                    onValueChange = { startTime = it },
-                    label = { Text("Hora inicio") },
-                    placeholder = { Text("HH:mm") },
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth()
-                )
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { startTimePickerDialog.show() }
+                ) {
+                    OutlinedTextField(
+                        value = startTime,
+                        onValueChange = { },
+                        readOnly = true,
+                        label = { Text("Hora inicio") },
+                        placeholder = { Text("Seleccionar hora") },
+                        singleLine = true,
+                        modifier = Modifier.fillMaxWidth(),
+                        enabled = false,
+                        colors = OutlinedTextFieldDefaults.colors(
+                            disabledTextColor = TextPrimary,
+                            disabledBorderColor = Border,
+                            disabledLabelColor = TextSecondary,
+                            disabledContainerColor = Color.Transparent,
+                            disabledPlaceholderColor = TextSecondary.copy(alpha = 0.5f)
+                        )
+                    )
+                }
 
                 Spacer(modifier = Modifier.height(Spacing.sm))
 
-                OutlinedTextField(
-                    value = endTime,
-                    onValueChange = { endTime = it },
-                    label = { Text("Hora fin") },
-                    placeholder = { Text("HH:mm") },
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth()
-                )
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { endTimePickerDialog.show() }
+                ) {
+                    OutlinedTextField(
+                        value = endTime,
+                        onValueChange = { },
+                        readOnly = true,
+                        label = { Text("Hora fin") },
+                        placeholder = { Text("Seleccionar hora") },
+                        singleLine = true,
+                        modifier = Modifier.fillMaxWidth(),
+                        enabled = false,
+                        colors = OutlinedTextFieldDefaults.colors(
+                            disabledTextColor = TextPrimary,
+                            disabledBorderColor = Border,
+                            disabledLabelColor = TextSecondary,
+                            disabledContainerColor = Color.Transparent,
+                            disabledPlaceholderColor = TextSecondary.copy(alpha = 0.5f)
+                        )
+                    )
+                }
 
                 Spacer(modifier = Modifier.height(Spacing.sm))
 
@@ -652,6 +742,7 @@ private fun AvailabilityEditorDialog(
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
+                                    .clickable { status = item }
                                     .padding(vertical = Spacing.sm),
                                 contentAlignment = Alignment.Center
                             ) {
