@@ -113,6 +113,38 @@ class MainActivity : ComponentActivity() {
                 apiService = notificationApiService
             )
 
+        val trainingSessionApiService =
+            RetrofitClient.retrofit.create(
+                com.courtly.coaches.contexts.trainingsessions.infrastructure.remote.TrainingSessionApiService::class.java
+            )
+
+        val trainingSessionRepository =
+            com.courtly.coaches.contexts.trainingsessions.infrastructure.repository.TrainingSessionRepositoryImpl(
+                apiService = trainingSessionApiService
+            )
+
+        val getMyTrainingSessionsUseCase =
+            com.courtly.coaches.contexts.trainingsessions.application.usecases.GetMyTrainingSessionsUseCase(
+                repository = trainingSessionRepository
+            )
+
+        val acceptTrainingSessionUseCase =
+            com.courtly.coaches.contexts.trainingsessions.application.usecases.AcceptTrainingSessionUseCase(
+                repository = trainingSessionRepository
+            )
+
+        val rejectTrainingSessionUseCase =
+            com.courtly.coaches.contexts.trainingsessions.application.usecases.RejectTrainingSessionUseCase(
+                repository = trainingSessionRepository
+            )
+
+        val trainingSessionsViewModelFactory =
+            com.courtly.coaches.contexts.trainingsessions.presentation.viewmodel.TrainingSessionsViewModelFactory(
+                getMyTrainingSessionsUseCase = getMyTrainingSessionsUseCase,
+                acceptTrainingSessionUseCase = acceptTrainingSessionUseCase,
+                rejectTrainingSessionUseCase = rejectTrainingSessionUseCase
+            )
+
         val signInViewModelFactory =
             SignInViewModelFactory(
                 signInUseCase = signInUseCase,
@@ -165,7 +197,8 @@ class MainActivity : ComponentActivity() {
                     signInViewModelFactory = signInViewModelFactory,
                     coachViewModelFactory = coachViewModelFactory,
                     analyticsViewModelFactory = analyticsViewModelFactory,
-                    notificationViewModelFactory = notificationViewModelFactory
+                    notificationViewModelFactory = notificationViewModelFactory,
+                    trainingSessionsViewModelFactory = trainingSessionsViewModelFactory
                 )
             }
         }
@@ -178,7 +211,8 @@ fun CourtlyApp(
     signInViewModelFactory: SignInViewModelFactory,
     coachViewModelFactory: CoachViewModelFactory,
     analyticsViewModelFactory: AnalyticsViewModelFactory,
-    notificationViewModelFactory: NotificationViewModelFactory
+    notificationViewModelFactory: NotificationViewModelFactory,
+    trainingSessionsViewModelFactory: com.courtly.coaches.contexts.trainingsessions.presentation.viewmodel.TrainingSessionsViewModelFactory
 ) {
     var isAuthenticated by remember {
         mutableStateOf(
@@ -199,10 +233,13 @@ fun CourtlyApp(
             viewModel(factory = analyticsViewModelFactory)
         val notificationViewModel: NotificationViewModel =
             viewModel(factory = notificationViewModelFactory)
+        val trainingSessionsViewModel: com.courtly.coaches.contexts.trainingsessions.presentation.viewmodel.TrainingSessionsViewModel =
+            viewModel(factory = trainingSessionsViewModelFactory)
         CoachNavigation(
             coachViewModel = coachViewModel,
             analyticsViewModel = analyticsViewModel,
             notificationViewModel = notificationViewModel,
+            trainingSessionsViewModel = trainingSessionsViewModel,
             userId = sessionStorage.getUserId()?.toLong() ?: 0L,
             onSignOut = {
                 sessionStorage.clearSession()
