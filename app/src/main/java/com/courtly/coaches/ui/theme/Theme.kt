@@ -28,6 +28,7 @@ fun CourtlyCoachesTheme(
     MaterialTheme(
         colorScheme = CourtlyLightColorScheme,
         typography = Typography,
+        shapes = Shapes,
         content = content
     )
 }

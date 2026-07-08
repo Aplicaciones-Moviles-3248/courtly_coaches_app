@@ -21,7 +21,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -38,6 +37,7 @@ import com.courtly.coaches.app.navigation.components.HOME_ROUTE
 import com.courtly.coaches.app.navigation.components.MATCHES_ROUTE
 import com.courtly.coaches.app.navigation.components.PROFILE_ROUTE
 import com.courtly.coaches.app.navigation.components.SESSIONS_ROUTE
+import com.courtly.coaches.app.navigation.components.ANALYTICS_ROUTE
 import com.courtly.coaches.contexts.coaches.presentation.screens.CoachProfileScreen
 import com.courtly.coaches.contexts.coaches.presentation.screens.CreateCoachScreen
 import com.courtly.coaches.contexts.coaches.presentation.screens.EditCoachScreen
@@ -52,6 +52,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.collectAsState
+import com.courtly.coaches.contexts.analytics.presentation.screens.AnalyticsScreen
+import com.courtly.coaches.contexts.analytics.presentation.viewmodel.AnalyticsViewModel
 import com.courtly.coaches.contexts.availabilities.presentation.screens.CoachAvailabilityScreen
 import com.courtly.coaches.contexts.notifications.presentation.screens.NotificationScreen
 import com.courtly.coaches.contexts.notifications.presentation.viewmodel.NotificationViewModel
@@ -64,8 +66,9 @@ private const val NOTIFICATIONS_ROUTE = "notifications"
 fun CoachNavigation(
     coachViewModel: CoachViewModel,
     notificationViewModel: NotificationViewModel,
+    analyticsViewModel: AnalyticsViewModel,
     userId: Long,
-    onSignOut: () -> Unit
+    onSignOut: () -> Unit,
 ) {
     val navController = rememberNavController()
     val coachUiState by coachViewModel.uiState.collectAsState()
@@ -81,7 +84,8 @@ fun CoachNavigation(
         AVAILABILITY_ROUTE,
         SESSIONS_ROUTE,
         MATCHES_ROUTE,
-        PROFILE_ROUTE
+        PROFILE_ROUTE,
+        ANALYTICS_ROUTE
     )
 
     val showBottomBar =
@@ -125,6 +129,14 @@ fun CoachNavigation(
                             route = MATCHES_ROUTE
                         )
                     },
+
+                    onNavigateToAnalytics = {
+                        navigateToMainTab(
+                            navController = navController,
+                            route = ANALYTICS_ROUTE
+                        )
+                    },
+
                     onNavigateToProfile = {
                         navigateToMainTab(
                             navController = navController,
@@ -175,6 +187,12 @@ fun CoachNavigation(
 
             composable(MATCHES_ROUTE) {
                 CoachMatchesPlaceholderScreen()
+            }
+
+            composable(ANALYTICS_ROUTE) {
+                AnalyticsScreen(
+                    viewModel = analyticsViewModel
+                )
             }
 
             composable(PROFILE_ROUTE) {
