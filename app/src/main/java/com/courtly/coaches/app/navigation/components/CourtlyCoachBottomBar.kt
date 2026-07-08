@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.courtly.coaches.ui.theme.DarkNavy
 import com.courtly.coaches.ui.theme.Primary
+import androidx.compose.material.icons.filled.BarChart
 
 @Composable
 fun CourtlyCoachBottomBar(
@@ -48,7 +49,8 @@ fun CourtlyCoachBottomBar(
     onNavigateToAvailability: () -> Unit,
     onNavigateToSessions: () -> Unit,
     onNavigateToMatches: () -> Unit,
-    onNavigateToProfile: () -> Unit
+    onNavigateToProfile: () -> Unit,
+    onNavigateToAnalytics: () -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -103,6 +105,13 @@ fun CourtlyCoachBottomBar(
                     label = "Partidos",
                     selected = selectedRoute == MATCHES_ROUTE,
                     onClick = onNavigateToMatches
+                )
+
+                CourtlyBottomBarItem(
+                    icon = Icons.Default.BarChart,
+                    label = "Stats",
+                    selected = selectedRoute == ANALYTICS_ROUTE,
+                    onClick = onNavigateToAnalytics
                 )
 
                 CourtlyBottomBarItem(
@@ -238,4 +247,5 @@ const val HOME_ROUTE = "home"
 const val AVAILABILITY_ROUTE = "availability"
 const val SESSIONS_ROUTE = "sessions"
 const val MATCHES_ROUTE = "matches"
+const val ANALYTICS_ROUTE = "analytics"
 const val PROFILE_ROUTE = "profile"
