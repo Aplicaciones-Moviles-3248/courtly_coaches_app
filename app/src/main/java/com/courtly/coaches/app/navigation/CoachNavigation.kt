@@ -73,10 +73,14 @@ import com.courtly.coaches.contexts.analytics.presentation.viewmodel.AnalyticsVi
 import com.courtly.coaches.contexts.availabilities.presentation.screens.CoachAvailabilityScreen
 import com.courtly.coaches.contexts.notifications.presentation.screens.NotificationScreen
 import com.courtly.coaches.contexts.notifications.presentation.viewmodel.NotificationViewModel
+import com.courtly.coaches.contexts.payments.presentation.components.ReceivedPaymentsDashboardCard
+import com.courtly.coaches.contexts.payments.presentation.screens.ReceivedPaymentsScreen
+import com.courtly.coaches.contexts.payments.presentation.viewmodel.ReceivedPaymentsViewModel
 
 private const val CREATE_COACH_ROUTE = "create_coach"
 private const val EDIT_COACH_ROUTE = "edit_coach"
 private const val NOTIFICATIONS_ROUTE = "notifications"
+private const val PAYMENTS_ROUTE = "payments"
 
 @Composable
 fun CoachNavigation(
@@ -84,6 +88,7 @@ fun CoachNavigation(
     notificationViewModel: NotificationViewModel,
     analyticsViewModel: AnalyticsViewModel,
     trainingSessionsViewModel: com.courtly.coaches.contexts.trainingsessions.presentation.viewmodel.TrainingSessionsViewModel,
+    receivedPaymentsViewModel: ReceivedPaymentsViewModel,
     userId: Long,
     onSignOut: () -> Unit,
 ) {
@@ -99,7 +104,8 @@ fun CoachNavigation(
         SESSIONS_ROUTE,
         MATCHES_ROUTE,
         PROFILE_ROUTE,
-        ANALYTICS_ROUTE
+        ANALYTICS_ROUTE,
+        PAYMENTS_ROUTE
     )
 
     val showBottomBar = currentRoute in mainRoutes
@@ -126,9 +132,6 @@ fun CoachNavigation(
                     },
                     onNavigateToSessions = {
                         navigateToMainTab(navController = navController, route = SESSIONS_ROUTE)
-                    },
-                    onNavigateToMatches = {
-                        navigateToMainTab(navController = navController, route = MATCHES_ROUTE)
                     },
 
                     onNavigateToAnalytics = {
@@ -162,8 +165,9 @@ fun CoachNavigation(
                     onNavigateToSessions = {
                         navigateToMainTab(navController = navController, route = SESSIONS_ROUTE)
                     },
-                    onNavigateToMatches = {
-                        navigateToMainTab(navController = navController, route = MATCHES_ROUTE)
+                    receivedPaymentsViewModel = receivedPaymentsViewModel,
+                    onOpenPayments = {
+                        navigateToMainTab(navController = navController, route = PAYMENTS_ROUTE)
                     },
                     onOpenProfile = {
                         navigateToMainTab(navController = navController, route = PROFILE_ROUTE)
@@ -192,6 +196,12 @@ fun CoachNavigation(
 
             composable(MATCHES_ROUTE) {
                 CoachMatchesPlaceholderScreen()
+            }
+
+            composable(PAYMENTS_ROUTE) {
+                ReceivedPaymentsScreen(
+                    viewModel = receivedPaymentsViewModel
+                )
             }
 
             composable(ANALYTICS_ROUTE) {
@@ -300,10 +310,17 @@ private fun CoachHomeScreen(
     coachName: String,
     onNavigateToAvailability: () -> Unit,
     onNavigateToSessions: () -> Unit,
-    onNavigateToMatches: () -> Unit,
+    receivedPaymentsViewModel: ReceivedPaymentsViewModel,
+    onOpenPayments: () -> Unit,
     onOpenProfile: () -> Unit,
     onOpenNotifications: () -> Unit
 ) {
+    val paymentsUiState by receivedPaymentsViewModel.uiState.collectAsState()
+
+    LaunchedEffect(Unit) {
+        receivedPaymentsViewModel.loadReceivedPayments()
+    }
+
     Scaffold(
         containerColor = Background,
         topBar = {
@@ -403,6 +420,13 @@ private fun CoachHomeScreen(
                 description = "Actualiza tu descripción, foto, especialidades y tarifas.",
                 icon = Icons.Default.Person,
                 onClick = onOpenProfile
+            )
+
+            Spacer(modifier = Modifier.height(Spacing.md))
+
+            ReceivedPaymentsDashboardCard(
+                uiState = paymentsUiState,
+                onOpenHistory = onOpenPayments
             )
 
             Spacer(modifier = Modifier.height(Spacing.md))
