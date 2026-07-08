@@ -39,6 +39,9 @@ import com.courtly.coaches.contexts.notifications.presentation.viewmodel.Notific
 import com.courtly.coaches.shared.infrastructure.network.RetrofitClient
 import com.courtly.coaches.shared.infrastructure.storage.SessionStorage
 import com.courtly.coaches.ui.theme.CourtlyCoachesTheme
+import com.courtly.coaches.contexts.analytics.infrastructure.remote.AnalyticsApiService
+import com.courtly.coaches.contexts.analytics.infrastructure.repository.AnalyticsRepositoryImpl
+import com.courtly.coaches.contexts.analytics.application.usecases.GetMyMetricsUseCase
 
 class MainActivity : ComponentActivity() {
 
@@ -83,23 +86,15 @@ class MainActivity : ComponentActivity() {
                 apiService = coachApiService
             )
 
-        val analyticsApiService =
-            RetrofitClient.retrofit.create(
-                com.courtly.coaches.contexts.analytics.infrastructure.remote.AnalyticsApiService::class.java
-            )
-
-        val analyticsRepository =
-            com.courtly.coaches.contexts.analytics.infrastructure.repository.AnalyticsRepositoryImpl(
-                apiService = analyticsApiService
-            )
-
-        val analyticsViewModelFactory =
-            com.courtly.coaches.contexts.analytics.presentation.viewmodel.AnalyticsViewModelFactory(
-                getMyMetricsUseCase =
-                    com.courtly.coaches.contexts.analytics.application.usecases.GetMyMetricsUseCase(
-                        analyticsRepository
-                    )
-            )
+        val analyticsApiService = RetrofitClient.retrofit.create(
+            AnalyticsApiService::class.java
+        )
+        val analyticsRepository = AnalyticsRepositoryImpl(
+            apiService = analyticsApiService
+        )
+        val analyticsViewModelFactory = AnalyticsViewModelFactory(
+            getMyMetricsUseCase = GetMyMetricsUseCase(analyticsRepository)
+        )
 
         val createCoachUseCase =
             CreateCoachUseCase(
@@ -167,8 +162,8 @@ class MainActivity : ComponentActivity() {
                     sessionStorage = sessionStorage,
                     signInViewModelFactory = signInViewModelFactory,
                     coachViewModelFactory = coachViewModelFactory,
+                    analyticsViewModelFactory = analyticsViewModelFactory,
                     notificationViewModelFactory = notificationViewModelFactory
-                    analyticsViewModelFactory = analyticsViewModelFactory
                 )
             }
         }
@@ -180,36 +175,25 @@ fun CourtlyApp(
     sessionStorage: SessionStorage,
     signInViewModelFactory: SignInViewModelFactory,
     coachViewModelFactory: CoachViewModelFactory,
+    analyticsViewModelFactory: AnalyticsViewModelFactory,
     notificationViewModelFactory: NotificationViewModelFactory
-    analyticsViewModelFactory: AnalyticsViewModelFactory
 ) {
     var isAuthenticated by remember {
         mutableStateOf(
             sessionStorage.hasActiveSession()
         )
     }
-
     if (isAuthenticated) {
         val coachViewModel: CoachViewModel =
-            viewModel(
-                factory = coachViewModelFactory
-            )
-
+            viewModel(factory = coachViewModelFactory)
+        val analyticsViewModel: AnalyticsViewModel =
+            viewModel(factory = analyticsViewModelFactory)
         val notificationViewModel: NotificationViewModel =
-            viewModel(
-                factory = notificationViewModelFactory
-              )
-            
-        val analyticsViewModel:
-                AnalyticsViewModel =
-            viewModel(
-                factory = analyticsViewModelFactory
-            )
-
+            viewModel(factory = notificationViewModelFactory)
         CoachNavigation(
             coachViewModel = coachViewModel,
-            notificationViewModel = notificationViewModel,
             analyticsViewModel = analyticsViewModel,
+            notificationViewModel = notificationViewModel,
             userId = sessionStorage.getUserId()?.toLong() ?: 0L,
             onSignOut = {
                 sessionStorage.clearSession()
