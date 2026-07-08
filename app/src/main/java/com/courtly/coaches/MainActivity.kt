@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,6 +38,7 @@ import com.courtly.coaches.contexts.notifications.infrastructure.repository.Noti
 import com.courtly.coaches.contexts.notifications.presentation.viewmodel.NotificationViewModel
 import com.courtly.coaches.contexts.notifications.presentation.viewmodel.NotificationViewModelFactory
 import com.courtly.coaches.shared.infrastructure.network.RetrofitClient
+import com.courtly.coaches.shared.infrastructure.network.SessionEventBus
 import com.courtly.coaches.shared.infrastructure.storage.SessionStorage
 import com.courtly.coaches.ui.theme.CourtlyCoachesTheme
 import com.courtly.coaches.contexts.analytics.infrastructure.remote.AnalyticsApiService
@@ -183,6 +185,13 @@ fun CourtlyApp(
             sessionStorage.hasActiveSession()
         )
     }
+
+    LaunchedEffect(Unit) {
+        SessionEventBus.sessionExpiredEvents.collect {
+            isAuthenticated = false
+        }
+    }
+
     if (isAuthenticated) {
         val coachViewModel: CoachViewModel =
             viewModel(factory = coachViewModelFactory)

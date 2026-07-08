@@ -37,6 +37,9 @@ object RetrofitClient {
             .addInterceptor(
                 AuthInterceptor(sessionStorage)
             )
+            .addInterceptor(
+                SessionExpiredInterceptor(sessionStorage)
+            )
             .connectTimeout(
                 30,
                 TimeUnit.SECONDS
