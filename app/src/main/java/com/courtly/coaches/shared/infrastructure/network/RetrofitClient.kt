@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit
 object RetrofitClient {
 
     private const val BASE_URL =
-        "https://courtly-backend.onrender.com/api/v1/"
+        "https://backend-production-d772.up.railway.app/api/v1/"
 
     private lateinit var sessionStorage: SessionStorage
 

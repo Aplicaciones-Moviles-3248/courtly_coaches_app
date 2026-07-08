@@ -22,7 +22,6 @@ import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.SportsSoccer
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.minimumInteractiveComponentSize
@@ -48,7 +47,6 @@ fun CourtlyCoachBottomBar(
     onNavigateToHome: () -> Unit,
     onNavigateToAvailability: () -> Unit,
     onNavigateToSessions: () -> Unit,
-    onNavigateToMatches: () -> Unit,
     onNavigateToProfile: () -> Unit,
     onNavigateToAnalytics: () -> Unit
 ) {
@@ -98,13 +96,6 @@ fun CourtlyCoachBottomBar(
 
                 Spacer(
                     modifier = Modifier.width(72.dp)
-                )
-
-                CourtlyBottomBarItem(
-                    icon = Icons.Default.SportsSoccer,
-                    label = "Partidos",
-                    selected = selectedRoute == MATCHES_ROUTE,
-                    onClick = onNavigateToMatches
                 )
 
                 CourtlyBottomBarItem(
@@ -218,28 +209,6 @@ private fun CourtlyCenterButton(
                 modifier = Modifier.size(27.dp)
             )
         }
-
-        Spacer(
-            modifier = Modifier.height(4.dp)
-        )
-
-        Text(
-            text = "Sesiones",
-            color = if (selected) {
-                Primary
-            } else {
-                Color(0xFF94A3B8)
-            },
-            fontSize = 10.sp,
-            lineHeight = 11.sp,
-            fontWeight = if (selected) {
-                FontWeight.Bold
-            } else {
-                FontWeight.Medium
-            },
-            textAlign = TextAlign.Center,
-            maxLines = 1
-        )
     }
 }
 

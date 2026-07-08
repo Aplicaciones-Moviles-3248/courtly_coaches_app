@@ -37,6 +37,11 @@ import com.courtly.coaches.contexts.notifications.infrastructure.remote.Notifica
 import com.courtly.coaches.contexts.notifications.infrastructure.repository.NotificationRepositoryImpl
 import com.courtly.coaches.contexts.notifications.presentation.viewmodel.NotificationViewModel
 import com.courtly.coaches.contexts.notifications.presentation.viewmodel.NotificationViewModelFactory
+import com.courtly.coaches.contexts.payments.application.usecases.GetReceivedPaymentsUseCase
+import com.courtly.coaches.contexts.payments.infrastructure.remote.PaymentApiService
+import com.courtly.coaches.contexts.payments.infrastructure.repository.PaymentRepositoryImpl
+import com.courtly.coaches.contexts.payments.presentation.viewmodel.ReceivedPaymentsViewModel
+import com.courtly.coaches.contexts.payments.presentation.viewmodel.ReceivedPaymentsViewModelFactory
 import com.courtly.coaches.shared.infrastructure.network.RetrofitClient
 import com.courtly.coaches.shared.infrastructure.network.SessionEventBus
 import com.courtly.coaches.shared.infrastructure.storage.SessionStorage
@@ -111,6 +116,23 @@ class MainActivity : ComponentActivity() {
         val notificationRepository =
             NotificationRepositoryImpl(
                 apiService = notificationApiService
+            )
+
+        val paymentApiService =
+            RetrofitClient.retrofit.create(
+                PaymentApiService::class.java
+            )
+
+        val paymentRepository =
+            PaymentRepositoryImpl(
+                apiService = paymentApiService
+            )
+
+        val receivedPaymentsViewModelFactory =
+            ReceivedPaymentsViewModelFactory(
+                getReceivedPaymentsUseCase = GetReceivedPaymentsUseCase(
+                    repository = paymentRepository
+                )
             )
 
         val trainingSessionApiService =
@@ -198,6 +220,7 @@ class MainActivity : ComponentActivity() {
                     coachViewModelFactory = coachViewModelFactory,
                     analyticsViewModelFactory = analyticsViewModelFactory,
                     notificationViewModelFactory = notificationViewModelFactory,
+                    receivedPaymentsViewModelFactory = receivedPaymentsViewModelFactory,
                     trainingSessionsViewModelFactory = trainingSessionsViewModelFactory
                 )
             }
@@ -212,6 +235,7 @@ fun CourtlyApp(
     coachViewModelFactory: CoachViewModelFactory,
     analyticsViewModelFactory: AnalyticsViewModelFactory,
     notificationViewModelFactory: NotificationViewModelFactory,
+    receivedPaymentsViewModelFactory: ReceivedPaymentsViewModelFactory,
     trainingSessionsViewModelFactory: com.courtly.coaches.contexts.trainingsessions.presentation.viewmodel.TrainingSessionsViewModelFactory
 ) {
     var isAuthenticated by remember {
@@ -235,11 +259,14 @@ fun CourtlyApp(
             viewModel(factory = notificationViewModelFactory)
         val trainingSessionsViewModel: com.courtly.coaches.contexts.trainingsessions.presentation.viewmodel.TrainingSessionsViewModel =
             viewModel(factory = trainingSessionsViewModelFactory)
+        val receivedPaymentsViewModel: ReceivedPaymentsViewModel =
+            viewModel(factory = receivedPaymentsViewModelFactory)
         CoachNavigation(
             coachViewModel = coachViewModel,
             analyticsViewModel = analyticsViewModel,
             notificationViewModel = notificationViewModel,
             trainingSessionsViewModel = trainingSessionsViewModel,
+            receivedPaymentsViewModel = receivedPaymentsViewModel,
             userId = sessionStorage.getUserId()?.toLong() ?: 0L,
             onSignOut = {
                 sessionStorage.clearSession()
