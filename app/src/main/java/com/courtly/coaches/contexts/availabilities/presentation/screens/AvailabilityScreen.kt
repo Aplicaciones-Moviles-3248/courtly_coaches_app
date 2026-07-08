@@ -19,13 +19,13 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Schedule
-import androidx.compose.material.icons.filled.Circle
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
@@ -52,8 +52,13 @@ import com.courtly.coaches.contexts.availabilities.presentation.viewmodel.Availa
 import com.courtly.coaches.ui.theme.Background
 import com.courtly.coaches.ui.theme.DarkNavy
 import com.courtly.coaches.ui.theme.Primary
+import com.courtly.coaches.ui.theme.Spacing
 import com.courtly.coaches.ui.theme.TextPrimary
 import com.courtly.coaches.ui.theme.TextSecondary
+import com.courtly.coaches.ui.theme.Border
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.foundation.clickable
+import androidx.compose.material3.OutlinedTextFieldDefaults
 
 @Composable
 fun AvailabilityScreen(
@@ -234,7 +239,7 @@ private fun AvailabilityContent(
                     },
                     onDelete = { onDeleteAvailability(availability) }
                 )
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(Spacing.sm))
             }
         }
     }
@@ -271,28 +276,28 @@ private fun HeroCard(
         colors = CardDefaults.cardColors(
             containerColor = DarkNavy
         ),
-        shape = RoundedCornerShape(28.dp),
+        shape = MaterialTheme.shapes.extraLarge,
         modifier = Modifier.fillMaxWidth()
     ) {
         Column(
-            modifier = Modifier.padding(20.dp)
+            modifier = Modifier.padding(Spacing.md)
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Surface(
                     color = Color.White.copy(alpha = 0.12f),
-                    shape = RoundedCornerShape(14.dp)
+                    shape = MaterialTheme.shapes.medium
                 ) {
                     Icon(
                         imageVector = Icons.Default.CalendarMonth,
                         contentDescription = "Agenda del entrenador",
                         tint = Primary,
-                        modifier = Modifier.padding(10.dp)
+                        modifier = Modifier.padding(Spacing.sm)
                     )
                 }
 
-                Spacer(modifier = Modifier.size(12.dp))
+                Spacer(modifier = Modifier.size(Spacing.sm))
 
                 Column {
                     Text(
@@ -312,7 +317,7 @@ private fun HeroCard(
                 }
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(Spacing.sm))
 
             Text(
                 text = "Gestiona tus bloques horarios. Los jugadores verán aquí tu disponibilidad para reservar sesiones.",
@@ -321,10 +326,10 @@ private fun HeroCard(
                 lineHeight = 20.sp
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(Spacing.md))
 
             Row(
-                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                horizontalArrangement = Arrangement.spacedBy(Spacing.sm),
                 modifier = Modifier.fillMaxWidth()
             ) {
                 SummaryChip(
@@ -357,9 +362,9 @@ private fun SummaryChip(
         modifier = modifier
             .background(
                 color = Color.White.copy(alpha = 0.08f),
-                shape = RoundedCornerShape(18.dp)
+                shape = MaterialTheme.shapes.medium
             )
-            .padding(vertical = 12.dp, horizontal = 10.dp)
+            .padding(vertical = Spacing.sm, horizontal = Spacing.sm)
     ) {
         Text(
             text = title,
@@ -368,7 +373,7 @@ private fun SummaryChip(
             fontWeight = FontWeight.Bold
         )
 
-        Spacer(modifier = Modifier.height(4.dp))
+        Spacer(modifier = Modifier.height(Spacing.xs))
 
         Text(
             text = value,
@@ -387,15 +392,15 @@ private fun AvailabilityCard(
 ) {
     Card(
         colors = CardDefaults.cardColors(containerColor = Color.White),
-        shape = RoundedCornerShape(22.dp),
+        shape = MaterialTheme.shapes.extraLarge,
         modifier = Modifier.fillMaxWidth()
     ) {
         Column(
-            modifier = Modifier.padding(18.dp)
+            modifier = Modifier.padding(Spacing.md)
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
+                horizontalArrangement = Arrangement.spacedBy(Spacing.sm)
             ) {
                 StatusDot(status = availability.status)
 
@@ -407,7 +412,7 @@ private fun AvailabilityCard(
                         fontWeight = FontWeight.Bold
                     )
 
-                    Spacer(modifier = Modifier.height(4.dp))
+                    Spacer(modifier = Modifier.height(Spacing.xs))
 
                     Text(
                         text = availability.status.label,
@@ -418,7 +423,7 @@ private fun AvailabilityCard(
             }
 
             if (availability.coach != null) {
-                Spacer(modifier = Modifier.height(10.dp))
+                Spacer(modifier = Modifier.height(Spacing.sm))
                 Text(
                     text = "Coach: ${availability.coach.name}",
                     color = TextSecondary,
@@ -426,10 +431,10 @@ private fun AvailabilityCard(
                 )
             }
 
-            Spacer(modifier = Modifier.height(14.dp))
+            Spacer(modifier = Modifier.height(Spacing.sm))
 
             Row(
-                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                horizontalArrangement = Arrangement.spacedBy(Spacing.sm),
                 modifier = Modifier.fillMaxWidth()
             ) {
                 OutlinedButton(
@@ -474,7 +479,7 @@ private fun ErrorCard(
 ) {
     Card(
         colors = CardDefaults.cardColors(containerColor = Color(0xFFFFECEC)),
-        shape = RoundedCornerShape(18.dp),
+        shape = MaterialTheme.shapes.medium,
         modifier = Modifier.fillMaxWidth()
     ) {
         Text(
@@ -484,7 +489,7 @@ private fun ErrorCard(
             textAlign = TextAlign.Center,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(14.dp)
+                .padding(Spacing.sm)
         )
     }
 }
@@ -495,11 +500,11 @@ private fun EmptyStateCard(
 ) {
     Card(
         colors = CardDefaults.cardColors(containerColor = Color.White),
-        shape = RoundedCornerShape(22.dp),
+        shape = MaterialTheme.shapes.extraLarge,
         modifier = Modifier.fillMaxWidth()
     ) {
         Column(
-            modifier = Modifier.padding(20.dp),
+            modifier = Modifier.padding(Spacing.md),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Icon(
@@ -509,7 +514,7 @@ private fun EmptyStateCard(
                 modifier = Modifier.size(42.dp)
             )
 
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(Spacing.sm))
 
             Text(
                 text = "Todavía no has cargado horarios",
@@ -519,7 +524,7 @@ private fun EmptyStateCard(
                 textAlign = TextAlign.Center
             )
 
-            Spacer(modifier = Modifier.height(6.dp))
+            Spacer(modifier = Modifier.height(Spacing.xs))
 
             Text(
                 text = "Crea tu primer bloque para que los jugadores puedan verlo en Courtly.",
@@ -528,7 +533,7 @@ private fun EmptyStateCard(
                 textAlign = TextAlign.Center
             )
 
-            Spacer(modifier = Modifier.height(14.dp))
+            Spacer(modifier = Modifier.height(Spacing.sm))
 
             Button(onClick = onCreate) {
                 Text("Crear horario")
@@ -549,6 +554,51 @@ private fun AvailabilityEditorDialog(
     var endTime by remember(availability?.id) { mutableStateOf(availability?.endTime ?: "") }
     var status by remember(availability?.id) {
         mutableStateOf(availability?.status ?: AvailabilityStatus.AVAILABLE)
+    }
+
+    val context = LocalContext.current
+    val calendar = remember { java.util.Calendar.getInstance() }
+
+    val datePickerDialog = remember {
+        android.app.DatePickerDialog(
+            context,
+            { _, year, month, dayOfMonth ->
+                val formattedMonth = String.format(java.util.Locale.US, "%02d", month + 1)
+                val formattedDay = String.format(java.util.Locale.US, "%02d", dayOfMonth)
+                date = "$year-$formattedMonth-$formattedDay"
+            },
+            calendar.get(java.util.Calendar.YEAR),
+            calendar.get(java.util.Calendar.MONTH),
+            calendar.get(java.util.Calendar.DAY_OF_MONTH)
+        )
+    }
+
+    val startTimePickerDialog = remember {
+        android.app.TimePickerDialog(
+            context,
+            { _, hourOfDay, minute ->
+                val formattedHour = String.format(java.util.Locale.US, "%02d", hourOfDay)
+                val formattedMinute = String.format(java.util.Locale.US, "%02d", minute)
+                startTime = "$formattedHour:$formattedMinute"
+            },
+            8,
+            0,
+            true
+        )
+    }
+
+    val endTimePickerDialog = remember {
+        android.app.TimePickerDialog(
+            context,
+            { _, hourOfDay, minute ->
+                val formattedHour = String.format(java.util.Locale.US, "%02d", hourOfDay)
+                val formattedMinute = String.format(java.util.Locale.US, "%02d", minute)
+                endTime = "$formattedHour:$formattedMinute"
+            },
+            9,
+            0,
+            true
+        )
     }
 
     AlertDialog(
@@ -589,45 +639,90 @@ private fun AvailabilityEditorDialog(
         text = {
             Column {
                 Text(
-                    text = "Completa tu bloque horario. Usa formato 24h para evitar errores.",
+                    text = "Completa tu bloque horario. Selecciona la fecha y las horas con los asistentes nativos.",
                     color = TextSecondary,
                     fontSize = 13.sp
                 )
 
-                Spacer(modifier = Modifier.height(14.dp))
+                Spacer(modifier = Modifier.height(Spacing.sm))
 
-                OutlinedTextField(
-                    value = date,
-                    onValueChange = { date = it },
-                    label = { Text("Fecha") },
-                    placeholder = { Text("YYYY-MM-DD") },
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth()
-                )
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { datePickerDialog.show() }
+                ) {
+                    OutlinedTextField(
+                        value = date,
+                        onValueChange = { },
+                        readOnly = true,
+                        label = { Text("Fecha") },
+                        placeholder = { Text("Seleccionar fecha") },
+                        singleLine = true,
+                        modifier = Modifier.fillMaxWidth(),
+                        enabled = false,
+                        colors = OutlinedTextFieldDefaults.colors(
+                            disabledTextColor = TextPrimary,
+                            disabledBorderColor = Border,
+                            disabledLabelColor = TextSecondary,
+                            disabledContainerColor = Color.Transparent,
+                            disabledPlaceholderColor = TextSecondary.copy(alpha = 0.5f)
+                        )
+                    )
+                }
 
-                Spacer(modifier = Modifier.height(10.dp))
+                Spacer(modifier = Modifier.height(Spacing.sm))
 
-                OutlinedTextField(
-                    value = startTime,
-                    onValueChange = { startTime = it },
-                    label = { Text("Hora inicio") },
-                    placeholder = { Text("HH:mm") },
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth()
-                )
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { startTimePickerDialog.show() }
+                ) {
+                    OutlinedTextField(
+                        value = startTime,
+                        onValueChange = { },
+                        readOnly = true,
+                        label = { Text("Hora inicio") },
+                        placeholder = { Text("Seleccionar hora") },
+                        singleLine = true,
+                        modifier = Modifier.fillMaxWidth(),
+                        enabled = false,
+                        colors = OutlinedTextFieldDefaults.colors(
+                            disabledTextColor = TextPrimary,
+                            disabledBorderColor = Border,
+                            disabledLabelColor = TextSecondary,
+                            disabledContainerColor = Color.Transparent,
+                            disabledPlaceholderColor = TextSecondary.copy(alpha = 0.5f)
+                        )
+                    )
+                }
 
-                Spacer(modifier = Modifier.height(10.dp))
+                Spacer(modifier = Modifier.height(Spacing.sm))
 
-                OutlinedTextField(
-                    value = endTime,
-                    onValueChange = { endTime = it },
-                    label = { Text("Hora fin") },
-                    placeholder = { Text("HH:mm") },
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth()
-                )
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { endTimePickerDialog.show() }
+                ) {
+                    OutlinedTextField(
+                        value = endTime,
+                        onValueChange = { },
+                        readOnly = true,
+                        label = { Text("Hora fin") },
+                        placeholder = { Text("Seleccionar hora") },
+                        singleLine = true,
+                        modifier = Modifier.fillMaxWidth(),
+                        enabled = false,
+                        colors = OutlinedTextFieldDefaults.colors(
+                            disabledTextColor = TextPrimary,
+                            disabledBorderColor = Border,
+                            disabledLabelColor = TextSecondary,
+                            disabledContainerColor = Color.Transparent,
+                            disabledPlaceholderColor = TextSecondary.copy(alpha = 0.5f)
+                        )
+                    )
+                }
 
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(Spacing.sm))
 
                 Text(
                     text = "Estado",
@@ -636,10 +731,10 @@ private fun AvailabilityEditorDialog(
                     fontWeight = FontWeight.Bold
                 )
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(Spacing.sm))
 
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(Spacing.sm),
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     AvailabilityStatus.values().forEach { item ->
@@ -656,13 +751,14 @@ private fun AvailabilityEditorDialog(
 
                         Surface(
                             color = bg,
-                            shape = RoundedCornerShape(14.dp),
+                            shape = MaterialTheme.shapes.medium,
                             modifier = Modifier.weight(1f)
                         ) {
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(vertical = 10.dp),
+                                    .clickable { status = item }
+                                    .padding(vertical = Spacing.sm),
                                 contentAlignment = Alignment.Center
                             ) {
                                 Text(

@@ -20,7 +20,8 @@ class CoachViewModel(
     private val getAllCoachesUseCase: GetAllCoachesUseCase,
     private val createCoachUseCase: CreateCoachUseCase,
     private val updateCoachUseCase: UpdateCoachUseCase,
-    private val deleteCoachUseCase: DeleteCoachUseCase
+    private val deleteCoachUseCase: DeleteCoachUseCase,
+    private val getCoachReviewsUseCase: com.courtly.coaches.contexts.reviews.application.usecases.GetCoachReviewsUseCase? = null
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(CoachUiState())
@@ -36,9 +37,11 @@ class CoachViewModel(
 
             try {
                 val coach = getMyCoachUseCase()
+                val reviews = getCoachReviewsUseCase?.execute(coach.id) ?: emptyList()
 
                 _uiState.value = _uiState.value.copy(
                     coach = coach,
+                    reviews = reviews,
                     isLoading = false,
                     profileNotFound = false
                 )
